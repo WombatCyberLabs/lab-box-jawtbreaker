@@ -1,4 +1,4 @@
-FROM node:10.23-buster-slim
+FROM node:12-buster-slim
 
 COPY . /app
 
@@ -8,11 +8,9 @@ RUN npm install
 
 RUN rm Dockerfile
 
-RUN useradd express
+RUN chown -R node:node /app/avatars
 
-RUN chown -R express:express /app
-
-USER express
+USER node
 
 EXPOSE 8080
 
