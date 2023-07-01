@@ -1,0 +1,63 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="main.css">
+		<script>
+			const addNote = async ()=>{
+				const newNote = document.getElementById('newNote');
+				const result = await(await fetch('/note',{
+					method:'post',
+					headers:{
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						note: newNote.value
+					})
+				})).json();
+				newNote.value = '';
+				if(!result.success)
+					return alert(result.message);
+				makeNotes(result.notes);
+			}
+			const loadHome = async ()=>{
+				return await(await fetch('/home')).json();
+
+			}
+			const makeNotes = notes=>{
+				const notesElement = document.getElementById('notes');
+				notesElement.innerHTML = '';
+				notes.forEach((note,i)=>{
+					const pre = document.createElement('pre');
+					pre.innerText = note;
+					pre.className = `note ${i%2?'lightBg':'darkBg'}`
+					notesElement.appendChild(pre);
+				});
+			}
+			window.addEventListener('load',async ()=>{
+				const data = await loadHome();
+				console.log(data);
+				document.getElementById('username').innerText = `    Welcome ${data.username}!`;
+				document.getElementById('avatar').src=`/avatar?file=${data.avatar}`;
+				makeNotes(data.notes);
+			});
+		</script>
+	</head>
+	<body>
+		<div>
+			<span class="dark">Fake </span>
+			<span class="light">Note</span>
+			<span class="dark">Site</span>
+			<br/>
+			<div class="holder">
+				<img id="avatar">
+				<pre id="username" class="username"></pre>
+			</div>
+			<br/>
+			<br/>
+			<div id="notes"></div>
+			<textarea id="newNote" placeholder="Add note"></textarea>
+			<input type="submit" value="submit" onClick="addNote()">
+			<br/>
+		</div>
+
+	</body>
+</html>

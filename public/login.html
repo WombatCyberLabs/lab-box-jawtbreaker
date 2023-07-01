@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<link rel="stylesheet" href="main.css">
+		<script>
+			const login = async ()=>{
+				const username = document.getElementById('username');
+				const password = document.getElementById('password');
+				const result = await(await fetch('/login',{
+					method:'post',
+					headers:{
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						username: username.value,
+						password: password.value
+					})
+				})).json();
+				username.value = '';
+				password.value = '';
+				if(!result.success)
+					return alert(result.message);
+				location.href = '/index.html';
+			}
+			window.addEventListener('load',()=>{
+				document.getElementById('password').addEventListener('keypress',e=>{
+					if(e.keyCode === 13)
+						login();
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<center>
+			<span class="dark">Fake </span>
+			<span class="light">Note</span>
+			<span class="dark">Site</span>
+			<br/>
+			<span class="light"> Login</span>
+			<input id="username" placeholder="username">
+			<br/>
+			<br/>
+			<input id="password" placeholder="password" type="password">
+			<a href="/register.html">Register</a>
+		</center>
+
+	</body>
+</html>
